@@ -3,6 +3,23 @@
 % EEE509-ASU
 % 06/12/2020
 
+%% Problem #18 (Chapter 5)
+Fs = 8000;
+Fn = Fs/2;
+wp = 1200/Fn;
+ws = 1800/Fn;
+pb = -1;
+sb = -30;
+
+[N,Wn] = buttord(wp,ws,pb,sb);
+[z,p,k] = butter(N,Wn);
+
+N
+
+z
+
+p
+
 %% Problem #1
 
 b = [1 -1.8 1.62 -0.729];

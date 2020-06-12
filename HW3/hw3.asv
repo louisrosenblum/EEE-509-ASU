@@ -3,6 +3,9 @@
 % EEE509-ASU
 % 06/12/2020
 
+%% Problem #18 (Chapter 5)
+[
+
 %% Problem #1
 
 b = [1 -1.8 1.62 -0.729];
@@ -52,11 +55,18 @@ title(k)
 
 %% Chebychev filter
 
+Fs = 10000;
+Fn = Fs/2;
+wp = 3000/Fn;
+ws = 4000/Fn;
+rp = 2;
+rs = 50;
+
 [N,Wn] = cheb1ord(wp,ws,rp,rs)
-[b,a] = butter(N,Wn);
+[b,a] = cheby1(N,rs,Wn);
 
 sys = tf(b,a);
 bode(sys)
-k = strcat(string(N),"th Order Butterworth Filter");
+k = strcat(string(N),"th Order Chebychev Filter");
 title(k)
 
