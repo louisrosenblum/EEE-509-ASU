@@ -14,7 +14,22 @@ cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 [mic1, Fs1] = audioread('mic1_2019.wav');
 [mic2, Fs2] = audioread('mic2_2019.wav');
 
-length1 = length(mic1);
-length2 = length(mic2);
+%%
+x1 = createFrames(mic1,7)
 
-%% 
+%% Function definitions
+
+function data = createFrames(audio,nFrames)
+
+    len = length(audio);
+
+ 	frameSize = ceil(len/nFrames);
+
+    total = frameSize*nFrames;
+
+    z = total - len;
+
+    pad = [audio;zeros(z,1)];
+ 
+    data = reshape(pad,frameSize,nFrames);
+end

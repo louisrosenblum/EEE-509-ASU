@@ -1,0 +1,37 @@
+% Louis Rosenblum
+% Project 2
+% EEE 509 - ASU
+% 06/10/2020
+
+%% Initialization
+
+clear all
+close all
+
+cd 'C:\Users\Louis\Desktop\DSP\Project 2'
+%% Read audio from file
+
+[mic1, Fs1] = audioread('mic1_2019.wav');
+[mic2, Fs2] = audioread('mic2_2019.wav');
+
+%%
+x1 = reshapevec(mic1,4)
+
+%% Function definitions
+
+function A = reshapevec(v,n)
+ % reshape an arbitrary length vector into a matrix, with n columns, putting in zeros for
+ % missing elements if length of v does not divide by x
+ % find number of elements, in input vector
+ numElements = length(v);
+ % divide and round up (ceil) to get required number of rows, m
+ numRows = ceil(numElements/n);
+ % determine total number of elements,needed in the desired m x n array
+ numNeeded = numRows*n;
+ % determine number of missing elements (how many are we short by)
+ numMissing = numNeeded - numElements;
+ % concatenate additional needed zero elements
+ vc = [v;zeros(numMissing,1)];
+ % now reshape (wrap columnwise) to get a matrix of the desired size
+ A = reshape(vc,numRows,n);
+end

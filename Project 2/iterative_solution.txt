@@ -1,0 +1,14 @@
+% Divide vector into frames
+function frame = returnFrame(audio,Nframes,i)
+    len = length(audio)
+    frameSize = ceil(len/Nframes)
+    
+    start = frameSize*i+1
+    stop = frameSize*(i+1)
+    if(stop > len)
+        frame = audio(start:end);
+    else
+        frame = audio(start:stop);
+    end
+    
+end
