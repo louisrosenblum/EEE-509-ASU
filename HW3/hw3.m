@@ -77,10 +77,20 @@ rp = 2;
 rs = 50;
 
 [N,Wn] = cheb1ord(wp,ws,rp,rs)
-[b,a] = cheby1(N,rs,Wn);
+[b,a] = cheby1(N,0.5,Wn);
 
 sys = tf(b,a);
 bode(sys)
 k = strcat(string(N),"th Order Chebychev Filter");
+title(k)
+
+%% Elliptic filter
+
+[N,Wn] = ellipord(wp,ws,rp,rs);
+[b,a] = ellip(N,0.5,20,Wn);
+
+sys = tf(b,a);
+bode(sys)
+k = strcat(string(N),"th Order Elliptic Filter");
 title(k)
 
