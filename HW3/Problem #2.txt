@@ -1,0 +1,12 @@
+The butterworth filter is the highest order with L = 8.
+
+The elliptic filter is the lowest order with L = 4.
+
+None of the three filters have linear phase but the chebychev filter appears the most linear of the three.
+
+The butterworth filter has a narrow transition with strong magnitude in the passband and strong attenuation in the stopband. The passband however is boosted by up to 30dB.
+
+The chebychev filter has a wider transitional period and near 0dB gain in the passband. However towards the transition the filter gain increases to about 20 dB.
+
+The elliptic filter has a narrower transition and 0dB gain at low frequencies but all features a spike in gain before the transition. 
+
