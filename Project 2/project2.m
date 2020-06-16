@@ -20,6 +20,9 @@ nFrames = 8;
 [mic1, Fs1] = audioread('mic1_2019.wav');
 [mic2, Fs2] = audioread('mic2_2019.wav');
 
+% Calculate starting SNR
+snr1 = snr(mic1);
+
 %% Create frame data structures
 
 [mic1_frames, len1] = createFrames(mic1,nFrames);
@@ -32,13 +35,31 @@ mic2_fft = fft(mic2_frames);
 
 %% Create diaganol matrices
 
-E = []
-B = zeros(len1,1);
+Es = [];
+Bs = [];
+es = [];
+B = zeros(len1/nFrames,1);
 
 for i = 1:nFrames
-    diaganol = diag(mic1_fft(:,1));
-    E(i) = mic2_fft(:,i) - diaganol * B;
+    % Calculate for current frame
+    diaganol = diag(mic1_fft(:,i));
+    E = mic2_fft(:,i) - diaganol * B;
+    e = ifft(E);
+    
+    Es = [Es E];
+    Bs = [Bs B];
+    es = [es e];
+    
+    % Prepare for next frame
+    B = B + 2 * diaganol'*E;
 end
+
+%% Revert frames to vector
+
+final_signal = createVector(es);
+
+% Calculate ending SNR
+snr2 = snr(final_signal);
 
 %% Function definitions
 
@@ -49,4 +70,13 @@ function [data, len] = createFrames(audio,nFrames)
     z = total - len;
     pad = [audio;zeros(z,1)];
     data = reshape(pad,frameSize,nFrames);
+end
+
+function data = createVector(audio)
+    [m,n] = size(audio);
+    data = [];
+    
+    for i = 1:n
+        data = [data rot90(audio(:,i))];
+    end
 end
