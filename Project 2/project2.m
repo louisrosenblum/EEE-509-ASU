@@ -5,7 +5,7 @@
 
 %% Initialization
 
-clear all
+%clear all
 close all
 
 cd 'C:\Users\Louis\Desktop\DSP\Project 2'
@@ -13,7 +13,7 @@ cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 %% Set runtime constants
 
 N = 64;
-nFrames = 8;
+nFrames = 128;
 
 %% Read audio from file
 
@@ -21,7 +21,7 @@ nFrames = 8;
 [mic2, Fs2] = audioread('mic2_2019.wav');
 
 % Calculate starting SNR
-snr1 = snr(mic1);
+snr1 = snr(mic1)
 
 %% Create frame data structures
 
@@ -30,15 +30,17 @@ snr1 = snr(mic1);
 
 %% Perform N-point fft
 
-mic1_fft = fft(mic1_frames);
-mic2_fft = fft(mic2_frames);
+mic1_fft = fft(mic1_frames,N);
+mic2_fft = fft(mic2_frames,N);
 
 %% Create diaganol matrices
 
 Es = [];
 Bs = [];
 es = [];
-B = zeros(len1/nFrames,1);
+B = zeros(N,1);
+
+%mu = 0.15;
 
 for i = 1:nFrames
     % Calculate for current frame
@@ -51,7 +53,7 @@ for i = 1:nFrames
     es = [es e];
     
     % Prepare for next frame
-    B = B + 2 * diaganol'*E;
+    B = B + 2*mu * diaganol'*E;
 end
 
 %% Revert frames to vector
@@ -59,8 +61,29 @@ end
 final_signal = createVector(es);
 
 % Calculate ending SNR
-snr2 = snr(final_signal);
+snr2 = snr(final_signal)
 
+diff = snr2 - snr1;
+
+%% Create plots
+
+% Plot original signal
+
+t = 0:1/Fs1:(length(mic1)-1)/Fs1;
+t2 = 0:1/Fs1:(length(final_signal)-1)/Fs1;
+
+figure();
+plot(t,mic1);
+title("Input Signal")
+xlabel("Time (s)")
+ylabel("Amplitude")
+
+% Plot filtered signal
+figure();
+plot(t2,final_signal);
+title("Output Signal")
+xlabel("Time (s)")
+ylabel("Amplitude")
 %% Function definitions
 
 function [data, len] = createFrames(audio,nFrames)
