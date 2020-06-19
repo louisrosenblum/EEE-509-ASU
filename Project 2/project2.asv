@@ -5,15 +5,27 @@
 
 %% Initialization
 
-clear all
+%clear all
 close all
 
 cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 
 %% Set runtime constants
 
-N = 64;
+N = 128;
 nFrames = 128;
+
+if (N == 4)
+    mu = 0.0007;
+elseif (N == 16)
+    mu = 0.0636;
+elseif (N == 64)
+    mu = 0.1115; 
+elseif (N == 128)
+    mu = 0.058;
+else (N == 256)
+    mu = 0.0235;
+end
 
 %% Read audio from file
 
@@ -21,7 +33,7 @@ nFrames = 128;
 [mic2, Fs2] = audioread('mic2_2019.wav');
 
 % Calculate starting SNR
-snr1 = snr(mic1);
+snr1 = snr(mic1)
 
 %% Create frame data structures
 
@@ -30,17 +42,18 @@ snr1 = snr(mic1);
 
 %% Perform N-point fft
 
-mic1_fft = fft(mic1_frames);
-mic2_fft = fft(mic2_frames);
+mic1_fft = fft(mic1_frames,N);
+mic2_fft = fft(mic2_frames,N);
 
 %% Create diaganol matrices
 
 Es = [];
 Bs = [];
 es = [];
-B = zeros(ceil(len1/nFrames,1);
+B = zeros(N,1);
 
-mu = 0.001;
+k = 1:nFrames;
+figure();
 
 for i = 1:nFrames
     % Calculate for current frame
@@ -54,7 +67,24 @@ for i = 1:nFrames
     
     % Prepare for next frame
     B = B + 2*mu * diaganol'*E;
+    
+    error = [error 20*log(mean(abs(E)).^2)]
 end
+
+title("Error convergence plot")
+
+f = ones(1,nFrames);
+
+for i = 1:nFrames
+    f(i) = Fs1/2 / 128 *i;
+end
+
+figure()
+mesh(k,f,20*log(abs(Bs)))
+title("3D Plot of Filter Coefficients")
+xlabel("Iteration i")
+ylabel("Frequency
+
 
 %% Revert frames to vector
 
@@ -63,11 +93,14 @@ final_signal = createVector(es);
 % Calculate ending SNR
 snr2 = snr(final_signal)
 
+diff = snr2 - snr1
+
 %% Create plots
 
 % Plot original signal
 
 t = 0:1/Fs1:(length(mic1)-1)/Fs1;
+t2 = 0:1/Fs1:(length(final_signal)-1)/Fs1;
 
 figure();
 plot(t,mic1);
@@ -77,7 +110,7 @@ ylabel("Amplitude")
 
 % Plot filtered signal
 figure();
-plot(t,final_signal);
+plot(t2,final_signal);
 title("Output Signal")
 xlabel("Time (s)")
 ylabel("Amplitude")

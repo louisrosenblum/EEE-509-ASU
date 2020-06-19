@@ -12,8 +12,20 @@ cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 
 %% Set runtime constants
 
-N = 64;
+N = 128;
 nFrames = 128;
+
+if (N == 4)
+    mu = 0.0007;
+elseif (N == 16)
+    mu = 0.0636;
+elseif (N == 64)
+    mu = 0.1115; 
+elseif (N == 128)
+    mu = 0.058;
+else (N == 256)
+    mu = 0.0235;
+end
 
 %% Read audio from file
 
@@ -40,7 +52,8 @@ Bs = [];
 es = [];
 B = zeros(N,1);
 
-%mu = 0.15;
+k = 1:nFrames;
+figure();
 
 for i = 1:nFrames
     % Calculate for current frame
@@ -54,7 +67,25 @@ for i = 1:nFrames
     
     % Prepare for next frame
     B = B + 2*mu * diaganol'*E;
+    
+    error = [error 20*log(mean(abs(E)).^2)]
 end
+
+title("Error convergence plot")
+
+f = ones(1,nFrames);
+
+for i = 1:nFrames
+    f(i) = Fs1/2 / 128 *i;
+end
+
+figure()
+mesh(k,f,20*log(abs(Bs)))
+title("3D Plot of Filter Coefficients (N = 128)")
+xlabel("Iteration i")
+ylabel("Frequency (Hz)")
+zlabel("Magnitude (dB)")
+
 
 %% Revert frames to vector
 
@@ -63,7 +94,7 @@ final_signal = createVector(es);
 % Calculate ending SNR
 snr2 = snr(final_signal)
 
-diff = snr2 - snr1;
+diff = snr2 - snr1
 
 %% Create plots
 
