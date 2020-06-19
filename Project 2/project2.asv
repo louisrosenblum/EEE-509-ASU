@@ -12,7 +12,7 @@ cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 
 %% Set runtime constants
 
-N = 128;
+N = 256;
 nFrames = 128;
 
 if (N == 4)
@@ -55,6 +55,11 @@ B = zeros(N,1);
 k = 1:nFrames;
 figure();
 
+error  = [];
+
+figure();
+q = 1:nFrames;
+
 for i = 1:nFrames
     % Calculate for current frame
     diaganol = diag(mic1_fft(:,i));
@@ -68,23 +73,9 @@ for i = 1:nFrames
     % Prepare for next frame
     B = B + 2*mu * diaganol'*E;
     
-    error = [error 20*log(mean(abs(E)).^2)]
+    p = 10*log(1/N * E'*E);
+    error = [error p]
 end
-
-title("Error convergence plot")
-
-f = ones(1,nFrames);
-
-for i = 1:nFrames
-    f(i) = Fs1/2 / 128 *i;
-end
-
-figure()
-mesh(k,f,20*log(abs(Bs)))
-title("3D Plot of Filter Coefficients")
-xlabel("Iteration i")
-ylabel("Frequency
-
 
 %% Revert frames to vector
 
@@ -95,12 +86,15 @@ snr2 = snr(final_signal)
 
 diff = snr2 - snr1
 
+soundsc(final_signal)
+
 %% Create plots
 
 % Plot original signal
 
 t = 0:1/Fs1:(length(mic1)-1)/Fs1;
 t2 = 0:1/Fs1:(length(final_signal)-1)/Fs1;
+t2 = t2.*256/N.*7/4;
 
 figure();
 plot(t,mic1);
@@ -110,6 +104,7 @@ ylabel("Amplitude")
 
 % Plot filtered signal
 figure();
+p = strcat("Output Signal N
 plot(t2,final_signal);
 title("Output Signal")
 xlabel("Time (s)")
