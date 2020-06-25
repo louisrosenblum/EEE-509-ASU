@@ -12,7 +12,7 @@ cd 'C:\Users\Louis\Desktop\DSP\Project 2'
 
 %% Set runtime constants
 
-N = 4;
+N = 512;
 nFrames = 128;
 
 if (N == 4)
@@ -23,8 +23,10 @@ elseif (N == 64)
     mu = 0.1115; 
 elseif (N == 128)
     mu = 0.058;
-else (N == 256)
+elseif (N == 256)
     mu = 0.0235;
+else
+    mu = 0.01;
 end
 
 %% Read audio from file
@@ -45,6 +47,7 @@ snr1 = snr(mic1)
 mic1_fft = fft(mic1_frames,N);
 mic2_fft = fft(mic2_frames,N);
 
+
 %% Create diaganol matrices
 
 Es = [];
@@ -64,7 +67,7 @@ for i = 1:nFrames
     % Calculate for current frame
     diaganol = diag(mic1_fft(:,i));
     E = mic2_fft(:,i) - diaganol * B;
-    e = ifft(E);
+    e = ifft(E,N);
     
     Es = [Es E];
     Bs = [Bs B];
@@ -72,9 +75,6 @@ for i = 1:nFrames
     
     % Prepare for next frame
     B = B + 2*mu * diaganol'*E;
-    
-    p = 10*log(1/N * E'*E);
-    error = [error p]
 end
 
 %% Revert frames to vector
@@ -86,15 +86,12 @@ snr2 = snr(final_signal)
 
 diff = snr2 - snr1
 
-soundsc(final_signal)
-
 %% Create plots
 
 % Plot original signal
 
 t = 0:1/Fs1:(length(mic1)-1)/Fs1;
 t2 = 0:1/Fs1:(length(final_signal)-1)/Fs1;
-t2 = t2.*256/N.*7/4;
 
 figure();
 plot(t,mic1);
