@@ -6,17 +6,13 @@
 %% Problem 3
 % Initialization
 
+cd 'C:\Users\Louis\Desktop\DSP\Final exam'
+
 clear all
 close all
 
-cd 'C:\Users\Louis\Desktop\DSP\Final exam'
-
 % Use FFT?
 use_fft = 1;
-
-% Start timing
-
-tic
 
 %% Read audio from file
 
@@ -69,11 +65,7 @@ plot(abs(output))
 
 %% Calculate SNR
 
-snr_result = snr(abs(output))
-
-%% Stop timing
-
-toc
+snr_result = 10*log (output.^2
 
 %% Function definitions
 
