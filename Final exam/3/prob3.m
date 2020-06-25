@@ -6,8 +6,6 @@
 %% Problem 3
 % Initialization
 
-cd 'C:\Users\Louis\Desktop\DSP\Final exam'
-
 clear all
 close all
 
